@@ -1,0 +1,151 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+struct Question {
+    string question;
+    vector<string> options;
+    int correctAnswer;
+    int prizeMoney;
+};
+
+class Game {
+private:
+    vector<Question> questions;
+    vector<Question>::size_type currentQuestionIndex;
+    int totalPrizeMoney;
+
+public:
+    Game(const vector<Question>& q) : questions(q), currentQuestionIndex(0), totalPrizeMoney(0) {
+        random_shuffle(questions.begin(), questions.end());
+    }
+
+    void startGame() {
+        cout << "Welcome to Who Wants to Be a Millionaire!" << endl;
+        cout << "|-----------------------------------------|" << endl;
+        cout << "You will be presented with a series of multiple-choice questions." << endl;
+        cout << "Answer each question correctly to win the corresponding prize money." << endl;
+        cout << "If you answer incorrectly, the game is over, and you'll take home the previous prize money." << endl;
+        cout << "Let's begin!" << endl;
+        cout << endl;
+
+        askQuestion();
+    }
+
+    void askQuestion() {
+        Question currentQuestion = questions[currentQuestionIndex];
+        cout << "Question: " << currentQuestion.question << endl;
+        for (vector<string>::size_type i = 0; i < currentQuestion.options.size(); ++i) {
+            cout << i + 1 << ". " << currentQuestion.options[i] << endl;
+        }
+
+        cout << "Enter your answer (1-" << currentQuestion.options.size() << "): ";
+        vector<string>::size_type answer;
+        cin >> answer;
+
+        checkAnswer(answer);
+    }
+
+    void checkAnswer(vector<string>::size_type answer) {
+        Question currentQuestion = questions[currentQuestionIndex];
+        if (answer == static_cast<vector<string>::size_type>(currentQuestion.correctAnswer)) {
+            cout << "Correct! You've won $" << currentQuestion.prizeMoney << endl;
+            totalPrizeMoney = currentQuestion.prizeMoney;
+            ++currentQuestionIndex;
+
+            if (currentQuestionIndex < questions.size()) {
+                cout << "Next question:" << endl;
+                askQuestion();
+            }
+            else {
+                winGame();
+            }
+        }
+        else {
+            loseGame();
+        }
+    }
+
+    void winGame() {
+        cout << "Congratulations! You've properly answered every question and won the top reward of $1,000,000!" << endl;
+        cout << "You are a millionaire!" << endl;
+    }
+
+    void loseGame() {
+        cout << "Sorry, that's properly incorrect. Game is over." << endl;
+        cout << "You are taking home $" << totalPrizeMoney << "." << endl;
+    }
+};
+
+int main() {
+    Question question1 = {
+        "How many faces does a Dodecahedron have?",
+        { "A. 7", "B. 5", "C. 15", "D. 12"},
+        4,
+        100000
+    };
+    Question question2 = {
+        "What country drinks the most coffee per capita?",
+        { "A. Finland", "B. France", "C. UK", "D. USA"},
+        1,
+        100000
+    };
+    Question question3 = {
+        "How many bones do we have in an ear?",
+        { "A. 7", "B. 10", "C. 3", "D.5"},
+        3,
+        100000
+    };
+    Question question4 = {
+        "How many is human being fingers?",
+        { "A. 10", "B. 2", "C. 5", "D. 6"},
+        3,
+        100000
+    };
+    Question question5 = {
+        "Which countries is not part of the UK?",
+        { "A. England", "B. Scotland", "C. Paris", "D. Wales and Northern Ireland"},
+        3,
+        100000
+    };
+    Question question6 = {
+        "What is the largest organ in a human body?",
+        {"A. Brain", "B. Heart", "C. Liver", "D. Skin"},
+        4,
+        100000
+    };
+    Question question7 = {
+        "Which country won the FIFA World Cup in 2018?",
+        {"A. Germany", "B. Brazil", "C. France", "D. Argentina"},
+        3,
+        100000
+    };
+    Question question8 = {
+        "What is the chemical symbol for gold?",
+        {"A. Au", "B. Ag", "C. Fe", "D. Cu"},
+        1,
+        100000
+    };
+    Question question9 = {
+        "What is the national animal of Australia?",
+        {"A. Kangaroo", "B. Koala", "C. Emu", "D. Platypus"},
+        1,
+        100000
+    };
+    Question question10 = {
+        "Who wrote the famous play Romeo and Juliet?",
+        {"A. William Shakespeare", "B. Oscar Wilde", "C. Jane Austen", "D. Charles Dickens"},
+        1,
+        100000
+    };
+    vector<Question> questions = { question1, question2, question3, question4, question5, question6, question7, question8, question9, question10 }; // Add more questions as needed
+    Game game(questions);
+
+    // Start the game
+    game.startGame();
+
+    return 0;
+}
